@@ -1,7 +1,11 @@
 $Index = "../Index.html"
-$PostPath = "../Posts/"
+
 $IndexBase = "../IndexBase.html"
 
+$HeaderPath = "../header.html"
+$HeaderMark = "<!--HEADER-->"
+
+$PostPath = "../Posts/"
 $PostSliceMark = "<!--POSTSLICES-->"
 
 # Wipe out index
@@ -18,6 +22,10 @@ for (;($i -lt $content.length) -and ($j -lt $posts.length); $i++) {
 		Write-Host "Adding $j"
 		$content[$i] = (Get-Content $posts[$j].fullName)
 		$j++
+	}
+	if ($content[$i] -match $HeaderMark) {
+		Write-Host "Adding header"
+		$content[$i] = (Get-Content $HeaderPath)
 	}
 }
 
