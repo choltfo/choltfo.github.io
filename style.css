@@ -1,14 +1,37 @@
+
+/*
+	Style sheets. Woo!
+*/
+
 body {
-    background-color: lightblue;
+    background-color: #DDDDDD;
 }
 
 h1 {
     color: #000000;
     text-align: center;
 }
+
 h2 {
     color: #555555;
     text-align: center;
+}
+
+h3 {
+	text-indent: 15px;
+}
+
+a:hover {
+	color: yellow;
+}
+a:visited {
+	color: black;
+}
+a:active {
+	color: red;
+}
+a:link {
+	color: black;
 }
 
 .posts {
