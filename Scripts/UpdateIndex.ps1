@@ -23,7 +23,7 @@ function Get-PostContents {
 	);
 	
 	$fileContents = Get-Content $file
-	return ($fileContents | select -last ([Math]::min( $fileContents.length, 2 )) ) # pare down to a few paragraphs...
+	return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
 }
 
 # Returns furst line of file
@@ -44,7 +44,21 @@ function Get-PostURL {
 	$tempOFS = $ofs
 	$ofs = ""
 	$relPath = "$FormattedPostPath"+[string]$relPath[($PostPath.length)..($relPath.length-1)]
+	$ofs = $tempOFS
 	return $relPath
+}
+
+# Returns the line after PostImage:
+function Get-PostImage {
+	Param (
+		$file
+	);
+	
+	Get-Content $file | select -first 10 | % {
+		if ($_.startsWith("PostImage:")) {
+			return $_[10..($_.length-1)]
+		}
+	}
 }
 
 # Load all posts and add them to the index page.
@@ -69,6 +83,11 @@ function updateIndex {
 				$content[$i] += (Get-PostTitle $_.fullName)
 				$content[$i] += "</a></h3>"
 				$content[$i] += "<hr>"
+				if (Get-PostImage $_.fullName) {
+					$content[$i] += "<img src=`""
+					$content[$i] += Get-PostImage $_.fullName
+					$content[$i] += "`" width=50% />"
+				}
 				$content[$i] += (Get-PostContents $_.fullName)
 				$content[$i] += "<br>"
 			}
@@ -81,3 +100,5 @@ function updateIndex {
 
 $content | Set-Content $index
 }
+
+updateIndex

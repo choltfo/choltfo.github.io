@@ -40,6 +40,17 @@ a:link {
     margin-right: auto;
 }
 
+
+.profileLinks {
+	margin: auto;
+	width: 100%;
+}
+
+.profileLinks img {
+    display: block;
+    margin: auto;
+}
+
 p {
     font-family: verdana;
     font-size: 14px;
