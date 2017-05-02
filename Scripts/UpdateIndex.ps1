@@ -27,7 +27,7 @@ function Get-PostContents ($file, $preview = $true){
 	if ($preview) {
 		return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
 	} else {
-		return ($fileContents | select -first ([Math]::min( $fileContents.length, 10000000 )))
+		return ($fileContents | ? {$_.startsWith("<")} |select -first ([Math]::min( $fileContents.length, 10000000 )))
 	}
 }
 
@@ -83,7 +83,10 @@ function buildPostPage {
 	
 	$contents | ? {$_.startsWith("<")} | %{
 		if ($_ -match $PostSliceMark) {
-			$_ = Get-PostContents -file $file -preview $false
+			$_ += "<h1>"
+			$_ += Get-PostTitle $file
+			$_ += "</h1>"
+			$_ += Get-PostContents -file $file -preview $false
 		}
 		if ($_ -match $HeaderMark) {
 			$_ = get-content $HeaderPath
