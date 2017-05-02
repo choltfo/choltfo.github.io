@@ -8,10 +8,14 @@ $IndexBase = "../IndexBase.html"
 $HeaderPath = "../header.html"
 $HeaderMark = "<!--HEADER-->"
 
+$PostHeaderFile = "../posthead.html"
+
 $PostPath = "../Posts/"
 $PostSliceMark = "<!--POSTSLICES-->"
 $FormattedPostPath = "../FormattedPosts/"
 #################################
+
+$ofs = ""
 
 
 # Pull first line
@@ -20,10 +24,15 @@ $FormattedPostPath = "../FormattedPosts/"
 function Get-PostContents {
 	Param (
 		$file
+		$preview = $true
 	);
 	
 	$fileContents = Get-Content $file
-	return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
+	if ($preview) {
+		return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
+	} else {
+		return ($fileContents | select -first ([Math]::min( $fileContents.length, 10000000 )))
+	}
 }
 
 # Returns furst line of file
@@ -61,6 +70,42 @@ function Get-PostImage {
 	}
 }
 
+function buildPostPage {
+	Param (
+		$file
+	);
+	$dest = Get-PostURL($file)
+	
+	echo "Destination is $dest"
+	echo "Destination is $(rvpa $dest)"
+	echo "File is $file"
+	
+	"" | set-content $dest
+	
+	 | %{
+		$content[$i] += "<h3><a href=`""   #"
+		$postURL = Get-PostURL $_.fullName # NOPENOPENOPE!
+		$content[$i] += $postURL[3..($postURL.length - 1)]
+		echo "linking to $($postURL[3..($postURL.length - 1)])"
+		$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
+		$content[$i] += (Get-PostTitle $_.fullName)
+		$content[$i] += "</a></h3>"
+		$content[$i] += "<hr>"
+		if (Get-PostImage $_.fullName) {
+			$content[$i] += "<img src=`""
+			$content[$i] += Get-PostImage $_.fullName
+			$content[$i] += "`" width=50% />"
+		}
+		$content[$i] += (Get-PostContents $_.fullName)
+		$content[$i] += "<br>"
+		
+		buildPostPage($_.fullName)
+	}
+	
+	get-content $file | add-content $dest
+	
+}
+
 # Load all posts and add them to the index page.
 # Also, generate the index page.
 function updateIndex {
@@ -71,15 +116,16 @@ function updateIndex {
 
 	$posts = Get-ChildItem $PostPath
 
-	$j = 0
 	$i = 0
 	for (;($i -lt $content.length) -and ($j -lt $posts.length); $i++) {
 		if ($content[$i] -match $PostSliceMark) {
 			Write-Host "Adding post summaries"
 			$posts | %{
-				$content[$i] += "<h3><a href=`""
-				$content[$i] += Get-PostURL $_.fullName # NOPENOPENOPE!
-				$content[$i] += "`">"
+				$content[$i] += "<h3><a href=`""   #"
+				$postURL = Get-PostURL $_.fullName # NOPENOPENOPE!
+				$content[$i] += $postURL[3..($postURL.length - 1)]
+				echo "linking to $($postURL[3..($postURL.length - 1)])"
+				$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
 				$content[$i] += (Get-PostTitle $_.fullName)
 				$content[$i] += "</a></h3>"
 				$content[$i] += "<hr>"
@@ -90,6 +136,8 @@ function updateIndex {
 				}
 				$content[$i] += (Get-PostContents $_.fullName)
 				$content[$i] += "<br>"
+				
+				buildPostPage($_.fullName)
 			}
 		}
 		if ($content[$i] -match $HeaderMark) {
