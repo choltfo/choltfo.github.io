@@ -21,11 +21,7 @@ $ofs = ""
 # Pull first line
 # This should be the title of the document
 #################################
-function Get-PostContents {
-	Param (
-		$file
-		$preview = $true
-	);
+function Get-PostContents ($file, $preview = $true){
 	
 	$fileContents = Get-Content $file
 	if ($preview) {
@@ -82,27 +78,21 @@ function buildPostPage {
 	
 	"" | set-content $dest
 	
-	 | %{
-		$content[$i] += "<h3><a href=`""   #"
-		$postURL = Get-PostURL $_.fullName # NOPENOPENOPE!
-		$content[$i] += $postURL[3..($postURL.length - 1)]
-		echo "linking to $($postURL[3..($postURL.length - 1)])"
-		$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
-		$content[$i] += (Get-PostTitle $_.fullName)
-		$content[$i] += "</a></h3>"
-		$content[$i] += "<hr>"
-		if (Get-PostImage $_.fullName) {
-			$content[$i] += "<img src=`""
-			$content[$i] += Get-PostImage $_.fullName
-			$content[$i] += "`" width=50% />"
-		}
-		$content[$i] += (Get-PostContents $_.fullName)
-		$content[$i] += "<br>"
-		
-		buildPostPage($_.fullName)
-	}
+	$contents = get-content $PostHeaderFile 
 	
-	get-content $file | add-content $dest
+	
+	$contents | ? {$_.startsWith("<")} | %{
+		if ($_ -match $PostSliceMark) {
+			$_ = Get-PostContents -file $file -preview $false
+		}
+		if ($_ -match $HeaderMark) {
+			$_ = get-content $HeaderPath
+		}
+		
+		$_ # Drop $_ onto pipe/stack
+	} | add-content $dest
+	
+	#get-content $file | add-content $dest
 	
 }
 
