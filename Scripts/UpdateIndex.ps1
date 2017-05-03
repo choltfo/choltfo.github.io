@@ -128,6 +128,8 @@ function updateIndex {
 					$content[$i] += "`" width=50% />"
 				}
 				$content[$i] += (Get-PostContents $_.fullName)
+				
+				$content[$i] += "<p><a href=`"$postURL`">Continue reading</a></p>"
 				$content[$i] += "<br>"
 				
 				buildPostPage($_.fullName)

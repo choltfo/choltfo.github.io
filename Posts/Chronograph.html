@@ -10,9 +10,12 @@ PostImage:/photos/chronograph/overview.JPG
 
 <br><p>With my parts in hand, I drew a circuit diagram (not included here for having been thrown out a while ago) and soldered it together for a minimal prototype. There was duct tape and zip ties involved.</p>
 <p>Photos of this stage of the project are not available, since it was, at this stage, hideous. Also, the photos were lost in the churn of my phone dying a slow and painful death.</p>
-<p>Once it had been found to work, a design consisting of more than duct tape and some scrap pine was needed. The electronics were soldered together on a permanent Arduino shield.</p>
-<p>With all parts soldered together and screen attached. measurements were taken and a design made in AutoCad, and the Centrepointe <i>Imagine Space</i> laser cutter was used to create the sheets from 6 and 3 mm MDF.</p>
+<p>Once it had been found to work, a design consisting of more than duct tape and some scrap pine was needed. The electronics were soldered together on a permanent Arduino shield, and a contrast adjustment, power, units, and mode switch were added.</p>
+<p>With all parts soldered together and screen attached, measurements were taken for an enclosure. The finger-joint box was designed in AutoCad, and the Centrepointe <i>Imagine Space</i> laser cutter was used to create the sheets from 6 and 3 mm MDF.</p>
 <img src="../photos/chronograph/closeup.JPG" width=50% /><img src="../photos/chronograph/guts.JPG" width=50% />
 
-<br><p>The software running on the microncontroller was fairly simple, and can be found <a href="https://github.com/choltfo/Chronograph/blob/master/Chronograph.ino">on my GitHub</a>. It works by attaching a falling-edge external interrupt to the pins associated with each photogate, and measuring the time between these two gates being triggered. The system loops over updating the screen.</p>
+<br><p>The software running on the microncontroller was fairly simple, and can be found <a href="https://github.com/choltfo/Chronograph/blob/master/Chronograph.ino">on my GitHub</a>. It works by attaching a falling-edge external interrupt to the pins associated with each photogate, and measuring the time between these two gates being triggered. The system loops over updating the screen, which provides information on the operation of the device and a readout of the data recorded.</p>
+
+<p>The previously mentioned mode switch was configured to toggle between measuring muzzle velocity and measuring fire rate. Since this was a software change, no significant reworking was needed.</p>
+
 
