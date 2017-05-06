@@ -114,9 +114,12 @@ function updateIndex {
 		if ($content[$i] -match $PostSliceMark) {
 			Write-Host "Adding post summaries"
 			$posts | %{
+				
+				$postURL = (Get-PostURL $_.fullName)
+				$postURL = $postURL[3..($postURL.length - 1)]
+				
 				$content[$i] += "<h3><a href=`""   #"
-				$postURL = Get-PostURL $_.fullName # NOPENOPENOPE!
-				$content[$i] += $postURL[3..($postURL.length - 1)]
+				$content[$i] += $postURL
 				echo "linking to $($postURL[3..($postURL.length - 1)])"
 				$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
 				$content[$i] += (Get-PostTitle $_.fullName)
