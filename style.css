@@ -52,6 +52,7 @@ a:active {
 .profileLinks {
 	margin: auto;
 	width: 100%;
+	text-align: center;
 }
 
 .profileLinks img {
