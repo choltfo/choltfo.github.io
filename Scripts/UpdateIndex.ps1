@@ -13,6 +13,8 @@ $PostHeaderFile = "../posthead.html"
 $PostPath = "../Posts/"
 $PostSliceMark = "<!--POSTSLICES-->"
 $FormattedPostPath = "../FormattedPosts/"
+
+$TestPath = "W:/" # This path gets nuked every time, so BE CAREFUL.
 #################################
 
 $ofs = ""
@@ -27,7 +29,7 @@ function Get-PostContents ($file, $preview = $true){
 	if ($preview) {
 		return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
 	} else {
-		return ($fileContents | ? {$_.startsWith("<")} |select -first ([Math]::min( $fileContents.length, 10000000 )))
+		return ($fileContents | ? {($_ -replace '\s','').startsWith("<")} |select -first ([Math]::min( $fileContents.length, 10000000 )))
 	}
 }
 
@@ -148,3 +150,11 @@ $content | Set-Content $index
 }
 
 updateIndex
+
+# Nuke testpath.
+remove-item -recurse -path $testPath
+
+# Copy entire webdev directory to ramdisk so that absolute paths work.
+copy-item -recurse -Path ../* -Destination $TestPath
+
+ii "$TestPath/index.html"
