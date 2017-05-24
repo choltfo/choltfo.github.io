@@ -4,7 +4,7 @@
 */
 
 body {
-    background-color: #DDDDDD;
+    background-color: #EEEEEE;
 }
 
 h1 {
@@ -33,7 +33,7 @@ a:hover {
 	color: #555500;
 }
 a:active {
-	color: red;
+	color: #FF0000;
 }
 
 .posts {
@@ -48,6 +48,18 @@ a:active {
     margin-right: auto;
 }
 
+.subtitle {
+	font-size: 8pt;
+	color: #909090;
+	margin-left: auto;
+    margin-right: auto;
+	max-width: 80%;
+}
+
+.subtitle p {
+	text-indent: 0px;
+}
+
 
 .profileLinks {
 	margin: auto;
@@ -60,7 +72,7 @@ a:active {
     margin: auto;
 }
 
-p {
+p li {
     font-family: verdana;
     font-size: 14px;
 	text-indent: 30px;
