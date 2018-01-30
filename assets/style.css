@@ -4,6 +4,7 @@
 */
 
 body {
+	font-family: "Source Sans Pro";
     background-color: #EEEEEE;
 }
 
@@ -72,8 +73,3 @@ a:active {
     margin: auto;
 }
 
-p li {
-    font-family: verdana;
-    font-size: 14px;
-	text-indent: 30px;
-}

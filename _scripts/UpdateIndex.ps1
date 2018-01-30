@@ -1,24 +1,29 @@
 
 # Constants
 #################################
-$Index = "../Index.html"
+$Root = Resolve-Path "$PSScriptRoot/../" -Relative
 
-$IndexBase = "../IndexBase.html"
+$Layout = "$Root/_partials/layout.html"
 
-$HeaderPath = "../header.html"
+$Index = "$Root/index.html"
+
+$HeaderPath = "$Root/_partials/header.html"
 $HeaderMark = "<!--HEADER-->"
 
-$PostHeaderFile = "../posthead.html"
+$InputFolder = "_posts"
+$InputPath = "$Root/$InputFolder/"
 
-$PostPath = "../Posts/"
 $PostSliceMark = "<!--POSTSLICES-->"
-$FormattedPostPath = "../FormattedPosts/"
 
-$TestPath = "W:/" # This path gets nuked every time, so BE CAREFUL.
+$OutputFolder = "pub"
+$OutputPath = "$Root/$OutputFolder/"
+
+$ImageMark = "PostImage:"
+
 #################################
 
 $ofs = ""
-
+$ErrorActionPreference = "Stop"
 
 # Pull first line
 # This should be the title of the document
@@ -29,11 +34,11 @@ function Get-PostContents ($file, $preview = $true){
 	if ($preview) {
 		return ($fileContents | ? {$_.startsWith("<")} | ? {-not $_.startsWith("<img")} | select -first ([Math]::min( $fileContents.length, 3 )) ) # pare down to a few paragraphs...
 	} else {
-		return ($fileContents | ? {($_ -replace '\s','').startsWith("<")} |select -first ([Math]::min( $fileContents.length, 10000000 )))
+		return ($fileContents | ? {($_ -replace '\s','').startsWith("<")} | select -first ([Math]::min( $fileContents.length, 10000000 )))
 	}
 }
 
-# Returns furst line of file
+# Returns first line of file
 #################################
 function Get-PostTitle {
 	Param (
@@ -47,11 +52,10 @@ function Get-PostURL {
 	Param (
 		$file
 	);
-	$relPath = (rvpa $file -relative)
-	$tempOFS = $ofs
-	$ofs = ""
-	$relPath = "$FormattedPostPath"+[string]$relPath[($PostPath.length)..($relPath.length-1)]
-	$ofs = $tempOFS
+	$relPath = (Resolve-Path $file -relative)
+
+	$relPath = $relPath -replace "$InputFolder", "$OutputFolder"
+
 	return $relPath
 }
 
@@ -62,8 +66,8 @@ function Get-PostImage {
 	);
 	
 	Get-Content $file | select -first 10 | % {
-		if ($_.startsWith("PostImage:")) {
-			return $_[10..($_.length-1)]
+		if ($_.startsWith($ImageMark)) {
+			return $_[$ImageMark.length..($_.length-1)]
 		}
 	}
 }
@@ -75,12 +79,11 @@ function buildPostPage {
 	$dest = Get-PostURL($file)
 	
 	echo "Destination is $dest"
-	echo "Destination is $(rvpa $dest)"
 	echo "File is $file"
 	
 	"" | set-content $dest
 	
-	$contents = get-content $PostHeaderFile 
+	$contents = get-content $Layout 
 	
 	
 	$contents | ? {$_.startsWith("<")} | %{
@@ -107,22 +110,21 @@ function updateIndex {
 	# Wipe out index
 	"" | Set-Content $Index
 
-	$content = (Get-Content $IndexBase)
+	$content = (Get-Content $Layout)
 
-	$posts = Get-ChildItem $PostPath
+	$posts = Get-ChildItem $InputPath
 
 	$i = 0
 	for (;($i -lt $content.length) -and ($j -lt $posts.length); $i++) {
 		if ($content[$i] -match $PostSliceMark) {
 			Write-Host "Adding post summaries"
-			$posts | %{
+			$posts | ForEach-Object {
 				
 				$postURL = (Get-PostURL $_.fullName)
-				$postURL = $postURL[3..($postURL.length - 1)]
-				
+				$postURL = $postURL[1..($postURL.length - 1)]
+				echo "linking to $postURL"
 				$content[$i] += "<h3><a href=`""   #"
 				$content[$i] += $postURL
-				echo "linking to $($postURL[3..($postURL.length - 1)])"
 				$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
 				$content[$i] += (Get-PostTitle $_.fullName)
 				$content[$i] += "</a></h3>"
@@ -149,12 +151,9 @@ function updateIndex {
 $content | Set-Content $index
 }
 
+cd $Root
 updateIndex
 
-# Nuke testpath.
-remove-item -recurse -path $testPath
-
-# Copy entire webdev directory to ramdisk so that absolute paths work.
-copy-item -recurse -Path ../* -Destination $TestPath
-
-ii "$TestPath/index.html"
+echo "Running server..."
+echo "Crtl-c to exit"
+python -m http.server
