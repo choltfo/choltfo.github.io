@@ -1,0 +1,18 @@
+NeoPixel desk lamp
+//PostImage:/photos/coilgun/
+<p>While moving into residence in Spring 2017, I expected the furnished room to have a desk lamp. I was sorely mistaken.</p>
+<p>With an interesting course load and potential late nights ahead, I realized I needed to get a good lamp with temperature adjustment. It turns out that these are available, and cheap.</p>
+<p>But, since I had all of my electronics gear with me, I decided to make a really cool one instead.</p>
+
+<p>Adafruit NeoPixels are a line of WS2812B-based RGB(W) LEDs. They are 5050 SMD parts, that come pre-installed on boards, strips or rings. As an experiment, I bought a ring of 12 LEDs and hooked them up to the Arduino Duemilanove previously (ab)used in the coilgun tests.</p>
+<p>These proved to be way too much fun to not try a larger test, so I ordered 144 LEDs in a one metre strip.</p>
+
+<img src="/photos/coilgun/Sketch.JPG" width=50% /><img src="/photos/coilgun/Redraw.JPG" width=50% />
+<div class="subtitle"><p>The clarity of the page suffered for having been scrawled on a page of programming notes, but was redrawn later that day. And entirely redone later that week.</p></div>
+
+<p>In short order, a rainbow pattern was set up to chase along the strip. This was made much easier when a friend suggested that I switch to the FastLED library, instead of the stock NeoPixel, which granted inbuilt HSV/HSL colours, which were used to great effect.</p>
+<p>The two enticing features to a "smart" desk lamp were making it act as a monitor backlight to reduce contrast and light bleed, and as a VU-meter.</p>
+<!--- Add photos of chasing and backlighting --->
+<p>Python was chosen as the ideal language for getting a prototype system working for these features. Google revealed that getting the averaged intensity of an input sound is dead simple. Talking over a serial connection at a byte level in Python is the more difficult part - I prefer languages where data is of known type, size, length, and location. But, after messing about with bytes([]) and max(min(0,x),255) for a while, a working system was devised. To check transmission intactness, 0x55 and 0xAA are on either side of the transmitted packet. A header ID of 0x01 indicates audio data, and the next byte is the actual scaled intensity. The subequent two bytes are ignored.</p>
+<!--- Add embedded code --->
+<p>The protocol may sound a little overdesigned, but the system was desiged so that I could swap between operating modes without reflashing the µcontroller, so enough packet space to discern purpose was needed.</p>
