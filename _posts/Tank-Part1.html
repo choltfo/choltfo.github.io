@@ -23,6 +23,7 @@
 <p>As a shameless Arduino fanboy, I opted for an ATMega328p, of Arduino Uno fame. It is available as a DIP package, readily programmmed with the tools I have on hand, and, in the event of emergency landing on the rocks of despair and complicated embedded C++, can be flashed with the Arduino bootloader to allow me to retreat with my tail between my legs to a safe place. Also to write code quickly.</p>
 <p>An ATMega328p has a UART, but no USB capabilities. I went with an FTDI FT232RL, which needs no introduction. The three main chips required a large amount of glue components, including a switching regulator module.</p>
 <img src="/assets/posts/tank/FinalSchematic.PNG" width=50% alt="The whole schematic, with FT232RL, Atmega328p, and DRV8704" />
+<div class="subtitle"><p>That'll work</p></div>
 <p>The ATMega part of the schematic was based off of the Arduino Deumilanove, and clocked at a conservative 16 MHz so that I could flash it with the Arduino Uno's booloader without needing to fiddle about with any configuration files.</p>
 
 
