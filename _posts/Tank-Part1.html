@@ -1,5 +1,4 @@
-Remote controlled tank, part 1: Designing a big motor controller.
-PostImage:/assets/posts/tank/Board.JPG
+2018-03-01 Remote controlled tank, part 1: Designing a big motor controller.
 <p>"You know what would be cool," I rhetorically asked a friend, "a remote control tank that has some serious heft to it. Like, some really serious heft.</p>
 <p>"How about large enough to sit on and get carried by?"</p>
 <p>"Sounds <i>perfect</i>".</p>
@@ -15,7 +14,7 @@ PostImage:/assets/posts/tank/Board.JPG
 <p>Clearly, the reasonable and most educational choice would be to design my own ESC. So I did.</p>
 <p>A motor controller, at its heart, is a bunch of switches (generally MOSFETs or IGBTs) connected to something that allows them to be turned on and off very quickly and exceptionally carefully. For reversibility and active-braking of a brushed DC motor, an <a href="https://en.wikipedia.org/wiki/H_bridge">H-bridge configuration</a> is usually (read: almost without exception) your best bet.</p>
 <p>Eight MOSFETs and a microncontroller sounds awfully straightforward when phrased that way. However, as the coilgun adventure proved <a href="/coilgun.html">last year</a>, high power, high precision switching is... difficult, and best left to the professionals.</p>
-<p>Enter the <a href="http://www.ti.com/product/DRV8704/datasheet">DRV-8704</a> dual-channel H-bridge controller from TI. It handles all the tricky bits, like switching the MOSFETs and watching for overcurrent events, and allows one to control it with four logic lines. If it sounds like black magic, that's because it <a href="http://www.ti.com/product/DRV8704/datasheet">pretty much is</a>.
+<p>Enter the <a href="http://www.ti.com/product/DRV8704/datasheet">DRV-8704</a> dual-channel H-bridge controller from TI. It handles all the tricky bits, like switching the MOSFETs and watching for overcurrent events, and allows one to control it with four logic lines. If it sounds like black magic, that's because it <a href="http://www.ti.com/product/DRV8704/datasheet">pretty much is</a>.</p>
 <p>After reading the datasheet once over and finding a reference implementation, it was off to Eagle!</p>
 <br>
 <p>Where, much to nobody's but my surprise, the HTSSOP-38 "PowerPad" package did not exist. Nor, subsequently, did the DRV8704. So I learned to make custom parts in Eagle by following this somewhat outdated but still very useful <a href="https://www.sparkfun.com/tutorials/110">tutorial from SparkFun</a>.</p>
@@ -26,7 +25,23 @@ PostImage:/assets/posts/tank/Board.JPG
 <img src="/assets/posts/tank/FinalSchematic.PNG" width=50% alt="The whole schematic, with FT232RL, Atmega328p, and DRV8704" />
 <p>The ATMega part of the schematic was based off of the Arduino Deumilanove, and clocked at a conservative 16 MHz so that I could flash it with the Arduino Uno's booloader without needing to fiddle about with any configuration files.</p>
 
+
 <h3>About those MOSFETs</h3>
 <!--- Talk about MOSFET selection, gate resistors--->
 <p>There are a lot of N-channel power MOSFETs on the market. Hell, there are a lot of them on DigiKey. So how did I chose the IRLB8314PBFs that I did?</p>
-<p>The large criteria are continuous current capability, (Vds)max, (Rds)on, (Vgs)max, and the diode characteristics (i.e, it needs to have a body diode).
+<p>The large criteria are continuous current capability, (Vds)max, (Rds)on, (Vgs)max, and the diode characteristics (i.e, it needs to have a body diode). The maximum current per device is 171 A, which provides a degree of overhead - recall that 27 amps of capacity are needed. Why, then, are there two of them in parallel?</p>
+<p>In short, overkill and a poor design choice made before having selected the MOSFETs properly.</p>
+<p>On each channel of the driver, there are four pairs of MOSFETs. At full gate charge, each transistor has a resistance of 2.4 milliohms. With 15 amps going through each transistor, a fairly sedate 1.08 watts of power is dissipated from each pair. All things considered, that's totally fine. Given that these are 500W motors, that's a efficiency of 99%, which is certainly good enough!</p>
+<br>
+<p>So why the hell does my design have provisions for paired transistors with 10W of heatsinking, and several inches of unnecessary copper between the switches and the motors?</p>
+<p>Well, the answer is simple: I screwed up. With better design, I could have saved board space ($), power consumption, BOM cost ($), and heat. The board traces will be dissipating 10W, yikes, and reaching 70°C at 20°C ambient. Yikes.</p>
+<p>This puts a dent in the wonderful efficiency numbers. In the second revision, the board will likely be half the size, and subsequently won't need the fan mounts or power supply, saving board and BOM. Also, I'll ensure the holes are all the right sizes.</p>
+
+<h3>The holes are what now?</h3>
+<p>I had to make several unique Eagle components for this. I did not get all of them entirely correct. The hole spacing was perfect in all cases (much to my relief), but the hole sizing on the 65A and 30A screw terminals left a bit to be desired. The battery connector was insertable, albeit barely, and the motor connectors could not be inserted except with a hammer.
+
+<h3>Too late, boards are already on order for a week.</h3>
+<p>And, with any luck, they'll work</p>
+<p>Tune in next time!</p>
+
+
