@@ -18,7 +18,7 @@
 <p>After reading the datasheet once over and finding a reference implementation, it was off to Eagle!</p>
 <br>
 <p>Where, much to nobody's but my surprise, the HTSSOP-38 "PowerPad" package did not exist. Nor, subsequently, did the DRV8704. So I learned to make custom parts in Eagle by following this somewhat outdated but still very useful <a href="https://www.sparkfun.com/tutorials/110">tutorial from SparkFun</a>.</p>
-<br><img src="/assets/posts/tank/DRV8704-symbol.png" width=25% alt="Look mom, I did it!"/>
+<br><img src="/assets/posts/tank/DRV8704-symbol.PNG" width=25% alt="Look mom, I did it!"/>
 <p>Within a day, I had the guts of the circuit figured out from the datasheet and reference implementation - MOSFETs on one side, decoupling and charge-pump capacitors on the other, and frightening current sense resistors packed into the ground lines for the motor. But an H-bridge does not an ESC make. Some device to actually control the controller was needed.</p>
 <p>As a shameless Arduino fanboy, I opted for an ATMega328p, of Arduino Uno fame. It is available as a DIP package, readily programmmed with the tools I have on hand, and, in the event of emergency landing on the rocks of despair and complicated embedded C++, can be flashed with the Arduino bootloader to allow me to retreat with my tail between my legs to a safe place. Also to write code quickly.</p>
 <p>An ATMega328p has a UART, but no USB capabilities. I went with an FTDI FT232RL, which needs no introduction. The three main chips required a large amount of glue components, including a switching regulator module.</p>
