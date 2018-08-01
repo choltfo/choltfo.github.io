@@ -41,14 +41,14 @@ PostImage:/assets/posts/tank/Board.jpg
 <h3>The next day</h3>
 <p>At breakfast, I remembered reading an article that discussed communication link failures and the unpredictable output from them. One of the weirder ones I remember is that a micro-fractured wire, or PCB trace, can behave like a capacitor, and turn square waves into one-shots up and down on falling and rising edges.</p>
 <p>I broke out my camera, a Ricoh WG3, and used its astonishingly powerful macro feature to take a close up look at the traces.
-<img src="/assets/posts/tank/BrokenTrace.PNG" width=100%/>
+<img src="/assets/posts/tank/BrokenTrace.png" width=100%/>
 <div class="subtitle"><p>Craaaaaaaaaaaaaaaaaap.</p></div>
 <p>Oh.</p>
 <p>In the fifth trace from the top of the image, there's a clear yellow line running bottom left to top right across the trace. That could be the magical broken trace! There's also another line across the trace immediately before the pad. And the pad is crooked.</p>
 <p>And on that same line, the pin on the DRV8704 is a touch dog-legged. But it gets better. By which I mean, of course, worse.</p>
 <p>The pad is sideways. And not adequately soldered. And covered in excess flux. And, generally, in pretty terrible condition.</p>
 <p>And this pin, 11th from the top of the chip, is, (Drum roll please!)</p>
-<img src="/assets/posts/tank/AIN2.PNG"/>
+<img src="/assets/posts/tank/AIN2.png"/>
 <div class="subtitle"><p>Nailed it!</p></div>
 <p>The A- pin, which needs to be PWMed to get reverse control.</p>
 <p>So, one of those issues is causing the problem. Or maybe not, but I cannot find anything else.</p>
