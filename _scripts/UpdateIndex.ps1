@@ -20,6 +20,8 @@ $OutputPath = "$Root/$OutputFolder/"
 
 $ImageMark = "PostImage:"
 
+$IndexMark = "PostIndex:"
+
 #################################
 
 $ofs = ""
@@ -46,6 +48,20 @@ function Get-PostTitle {
 	);
 	
 	return (Get-Content $file | select -first 1)
+}
+
+function Get-PostIndex {
+	Param (
+		$file
+	);
+	
+	Get-Content $file | select -first 10 | % {
+		if ($_.startsWith($IndexMark)) {
+			return $_[$IndexMark.length..($_.length-1)]
+		}
+	}
+	
+	return 0;
 }
 
 function Get-PostURL {
@@ -113,8 +129,12 @@ function updateIndex {
 	$content = (Get-Content $Layout)
 
 	$posts = Get-ChildItem $InputPath
+	
+	$posts = $posts | sort-object -descending {Get-PostIndex $_.fullName}
 
 	$i = 0
+	
+	# For each line in the template
 	for (;($i -lt $content.length) -and ($j -lt $posts.length); $i++) {
 		if ($content[$i] -match $PostSliceMark) {
 			Write-Host "Adding post summaries"
@@ -125,7 +145,7 @@ function updateIndex {
 				echo "linking to $postURL"
 				$content[$i] += "<h3><a href=`""   #"
 				$content[$i] += $postURL
-				$content[$i] += "`">" #" Here to remove bad escape character handing in notepad++
+				$content[$i] += "`">" #" This comment is here to remove bad escape character handing in notepad++
 				$content[$i] += (Get-PostTitle $_.fullName)
 				$content[$i] += "</a></h3>"
 				$content[$i] += "<hr>"
