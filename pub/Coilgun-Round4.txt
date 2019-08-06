@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link href='https://fonts.googleapis.com/css?family=Source Sans Pro' rel='stylesheet'>
+<link href="/assets/style.css" rel="stylesheet" type="text/css">
+<title>Charles Holtforster</title>
+</head>
+<body>
+<a href="/">
+<h1>Projects, Ideas, and Hare-Brained Schemes</h1>
+<h2>The portfolio of Charles Holtforster</h2>
+</a>
+
+<div class="profileLinks">
+<a href="https://github.com/choltfo"><img src="/assets/GitHub_Logo.png" width=10%></a>
+<br>
+<a href="/CharlesHoltforster.pdf">My r&eacute;sum&eacute;</a>
+</div>
+<hr>
+<div class="posts">
+<!--POSTSLICES--><h1>Building a Coilgun: Round 4</h1><p>At this point in the adventure, I am working at Hacksmith Entertainment, and have been instructed to build the largest coilgun we are legally permitted to construct.</p><h3>More daka.</h3>
+</div>
+<hr>
+<div class="footer">
+<!-- Change this when the matter arises -->
+<p>Hey, since you seem interested: If you want a mechatronics engineering co-op student for Winter 2019, here's my <a href="/CharlesHoltforster.pdf">r&eacute;sum&eacute;</a>.</p>
+<p>If that's how you got here in the first place, then I hope these stories has done something to sway your hiring opinions in my favour!</p>
+</div>
+</body>
+</html>
